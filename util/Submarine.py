@@ -24,27 +24,29 @@ class Submarine:
 
             idx = 0
             while len(filtered_report) > 1:
-                print("Before filter", filtered_report)
+                #print("Before filter", filtered_report)
                 most_common, least_common = self._get_commons(filtered_report)
                 check = max_tied(most_common[idx], least_common[idx], int(most))
-                print(check)
+                #print(check)
                 filtered_report = [bit for bit in filtered_report if bit[idx] == check]
-                print("After filter", filtered_report)
+                #print("After filter", filtered_report)
                 idx += 1
             return filtered_report[0]
 
-        def analyse(self):
+        def analyse_power(self):
             most_common, least_common = self._get_commons(self.report)
-
-            filter_most = self._filter_report(True)
-            filter_least = self._filter_report(False)
 
             gamma = self._bitstring_to_int(most_common)
             terra = self._bitstring_to_int(least_common)
+            return gamma, terra
+
+        def analyse_living(self):
+            filter_most = self._filter_report(True)
+            filter_least = self._filter_report(False)
+
             oxygen = self._bitstring_to_int(filter_most)
             co2 = self._bitstring_to_int(filter_least)
-            print(oxygen, co2)
-            return gamma, terra, oxygen, co2
+            return oxygen, co2
 
     class Position:
         def __init__(self):
@@ -70,12 +72,12 @@ class Submarine:
 
     def calculate_power_consumption(self, report):
         diagnostics = self.Diagnostics(report)
-        gamma, terra, _, _ = diagnostics.analyse()
+        gamma, terra = diagnostics.analyse_power()
         return gamma * terra
 
     def calculate_life_support_rating(self, report):
         diagnostics = self.Diagnostics(report)
-        _, _, oxygen, co2 = diagnostics.analyse()
+        oxygen, co2 = diagnostics.analyse_living()
         return oxygen * co2
 
 
