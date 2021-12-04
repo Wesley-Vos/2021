@@ -18,7 +18,7 @@ class Day4(Day):
 
 
 def main():
-    day = Day4("day4.txt")
+    day = Day4("../../input/day4.in")
     day.run()
 
 

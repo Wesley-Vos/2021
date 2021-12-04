@@ -9,7 +9,7 @@ Written in Python 3.10 following the Object-Oriented Programming paradigm and tr
 ### Day 3 - Diagnostics
 
 ### Day 4 - Bingo
-The game at Day 4 was playing Bingo with a squit. Given the input of drawn numbers and all bingo cards.
+The game at Day 4 was playing Bingo with a squid. Given the input of drawn numbers and all bingo cards.
 The program has to find the card that as first (or last) has one full row. The result is the sum of unmarked numbers
 on the winning card multiplied by the last drawn number.
 ```python

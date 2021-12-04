@@ -20,7 +20,7 @@ class Day1(Day):
 
 
 def main():
-    day1 = Day1("day1.txt")
+    day1 = Day1("../../input/day1.in")
     day1.run()
 
 
