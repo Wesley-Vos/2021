@@ -1,5 +1,5 @@
-from util.Bingo import Bingo
-from util.Day import Day
+from aoc.util.Bingo import Bingo
+from aoc.util.Day import Day
 
 
 class Day4(Day):

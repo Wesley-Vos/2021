@@ -1,4 +1,4 @@
-from util.Day import Day
+from aoc.util.Day import Day
 
 
 class Day5(Day):

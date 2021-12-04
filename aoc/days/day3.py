@@ -1,5 +1,5 @@
-from util.Day import Day
-from util.Submarine import Submarine
+from aoc.util.Day import Day
+from aoc.util.Submarine import Submarine
 
 
 class Day3(Day):
