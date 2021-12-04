@@ -1,10 +1,9 @@
 from util.Day import Day
-from util.Submarine import Submarine
+from util.Submarine import Submarine, AimedSubmarine
 
 
 class Day2(Day):
     commands = None
-    submarine = None
 
     class Command:
         direction = None
@@ -19,17 +18,16 @@ class Day2(Day):
         super().__init__(filename)
         self.commands = list(map(self.Command, self.data))
 
-    def _solve_partX(self, part):
-        self.submarine = Submarine()
+    def _solve_partX(self, submarine):
         for command in self.commands:
-            self.submarine.move(command.direction, command.amount, part=part)
-        return self.submarine.position.x * self.submarine.position.depth
+            submarine.move(command.direction, command.amount)
+        return submarine.position.x * submarine.position.depth
 
     def solve_part1(self):
-        return self._solve_partX(1)
+        return self._solve_partX(Submarine())
 
     def solve_part2(self):
-        return self._solve_partX(2)
+        return self._solve_partX(AimedSubmarine())
 
 
 def main():
