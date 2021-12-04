@@ -1,24 +1,20 @@
-from util.Bingo import Bingo
 from util.Day import Day
 
 
-class Day4(Day):
-    numbers = None
-    cards = None
+class Day5(Day):
 
     def __init__(self, filename):
         super().__init__(filename)
-        self.bingo = Bingo(self.data)
         
     def solve_part1(self):
-        return self.bingo.play(True)
+        return 0
 
     def solve_part2(self):
-        return self.bingo.play(False)
+        return 0
 
 
 def main():
-    day = Day4("day4.txt")
+    day = Day5("day5.txt")
     day.run()
 
 
