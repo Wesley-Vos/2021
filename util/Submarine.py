@@ -1,11 +1,11 @@
-def max_tied(a, b, tie):
-    return tie if a == b else (a if tie else b)
-
-
 class Submarine:
     class Diagnostics:
         def __init__(self, report):
             self.report = report
+
+        @staticmethod
+        def max_tied(a, b, tie):
+            return tie if a == b else (a if tie else b)
 
         @staticmethod
         def _get_commons(report):
@@ -24,12 +24,12 @@ class Submarine:
 
             idx = 0
             while len(filtered_report) > 1:
-                #print("Before filter", filtered_report)
+                # print("Before filter", filtered_report)
                 most_common, least_common = self._get_commons(filtered_report)
-                check = max_tied(most_common[idx], least_common[idx], int(most))
-                #print(check)
+                check = self.max_tied(most_common[idx], least_common[idx], int(most))
+                # print(check)
                 filtered_report = [bit for bit in filtered_report if bit[idx] == check]
-                #print("After filter", filtered_report)
+                # print("After filter", filtered_report)
                 idx += 1
             return filtered_report[0]
 
@@ -54,30 +54,29 @@ class Submarine:
             self.depth = 0
 
     position = None
+    diagnostics = None
 
     def __init__(self):
         self.position = self.Position()
 
-    def _forward(self, amount):
-        self.position.x += amount
-
-    def _down(self, amount):
-        self.position.depth += amount
-
-    def _up(self, amount):
-        self.position.depth -= amount
-
     def move(self, direction, amount):
-        eval(f'self._{direction}({amount})')
+        match direction:
+            case "forward":
+                self.position.x += amount
+            case "up":
+                self.position.depth -= amount
+            case "down":
+                self.position.depth += amount
 
-    def calculate_power_consumption(self, report):
-        diagnostics = self.Diagnostics(report)
-        gamma, terra = diagnostics.analyse_power()
+    def insert_diagnostics_report(self, report):
+        self.diagnostics = self.Diagnostics(report)
+
+    def calculate_power_consumption(self):
+        gamma, terra = self.diagnostics.analyse_power()
         return gamma * terra
 
-    def calculate_life_support_rating(self, report):
-        diagnostics = self.Diagnostics(report)
-        oxygen, co2 = diagnostics.analyse_living()
+    def calculate_life_support_rating(self):
+        oxygen, co2 = self.diagnostics.analyse_living()
         return oxygen * co2
 
 
@@ -86,12 +85,12 @@ class AimedSubmarine(Submarine):
         super().__init__()
         self.aim = 0
 
-    def _forward(self, amount):
-        super()._forward(amount)
-        self.position.depth += amount * self.aim
-
-    def _down(self, amount):
-        self.aim += amount
-
-    def _up(self, amount):
-        self.aim -= amount
+    def move(self, direction, amount):
+        match direction:
+            case "forward":
+                self.position.x += amount
+                self.position.depth += amount * self.aim
+            case "up":
+                self.aim -= amount
+            case "down":
+                self.aim += amount

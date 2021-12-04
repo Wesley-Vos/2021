@@ -1,19 +1,18 @@
 from util.Day import Day
-from util.Submarine import Submarine, AimedSubmarine
+from util.Submarine import Submarine
 
 
 class Day3(Day):
     def __init__(self, filename):
         super().__init__(filename)
-        self.report = self.data
+        self.submarine = Submarine()
+        self.submarine.insert_diagnostics_report(self.data)
 
     def solve_part1(self):
-        submarine = Submarine()
-        return submarine.calculate_power_consumption(self.report)
+        return self.submarine.calculate_power_consumption()
 
     def solve_part2(self):
-        submarine = Submarine()
-        return submarine.calculate_life_support_rating(self.report)
+        return self.submarine.calculate_life_support_rating()
 
 
 def main():
