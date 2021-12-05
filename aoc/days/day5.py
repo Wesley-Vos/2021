@@ -22,12 +22,10 @@ class HydroThermalVents:
                 for x in x_range:
                     self.visits[(x, y1)] = 1 + self.visits.get((x, y1), 0)
             elif not straight_only and abs(x1 - x2) == abs(y1 - y2):
-                amount = abs(x1 - x2)
                 x_range = list(range(x1, x2 + 1)) if x2 > x1 else sorted(list(range(x2, x1 + 1)), reverse=True)
                 y_range = list(range(y1, y2 + 1)) if y2 > y1 else sorted(list(range(y2, y1 + 1)), reverse=True)
 
-                for i in range(0, amount + 1):
-                    x, y = x_range[i], y_range[i]
+                for x, y in zip(x_range, y_range):
                     self.visits[(x, y)] = 1 + self.visits.get((x, y), 0)
 
         return len([cnt for cnt in self.visits.values() if cnt >= 2])
