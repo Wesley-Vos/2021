@@ -1,5 +1,4 @@
 from aoc.util.Day import Day
-import re
 
 
 class LanternFishGrow:
