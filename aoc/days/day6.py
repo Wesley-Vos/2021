@@ -3,27 +3,17 @@ import re
 
 
 class LanternFishGrow:
-    class Lantern:
-        def __init__(self, initial_state=None):
-            self.timer = initial_state or 8
-
-        def age(self):
-            self.timer -= 1
-
-        def __str__(self):
-            return str(self.timer)
-
     def __init__(self, data):
         self.data = data
         self._set_initial_data()
 
     def _set_initial_data(self):
-        self.population = {day: 0 for day in range(0, 9)}
+        self.population = [0 for i in range(0, 9)]
         for fish in map(int, self.data[0].split(",")):
             self.population[fish] += 1
 
     def __str__(self):
-        return '\t'.join(map(lambda f: str(f[0]) + ": " + str(f[1]), self.population.items()))
+        return '\t'.join(map(lambda f: str(f[0]) + ": " + str(f[1]), self.population))
 
     def reset(self):
         self._set_initial_data()
@@ -44,7 +34,7 @@ class LanternFishGrow:
             self._age()
 
     def size(self):
-        return sum(self.population.values())
+        return sum(self.population)
 
 
 class Day6(Day):

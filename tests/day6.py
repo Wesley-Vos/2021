@@ -20,7 +20,7 @@ class Day3Test(unittest.TestCase):
         self.assertEqual(day.solve_part1(), answer1, f"The test for part 1 should return {answer1}")
 
     def test_part2(self):
-        answer2 = 20373
+        answer2 = 1687617803407
         day = Day6("../input/day6.in")
         self.assertEqual(day.solve_part2(), answer2, f"The test for part 2 should return {answer2}")
 
