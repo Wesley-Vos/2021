@@ -7,7 +7,7 @@ class Day7(Day):
         self.data = list(map(int, self.data[0].split(",")))
 
     def calc(self, linear_fuel=True):
-        return int(min(sum(diff if (diff := abs(pos - i)) and linear_fuel else diff*(diff + 1)/2 for pos in self.data) for i in range(min(self.data), max(self.data) + 1)))
+        return int(min(sum(diff if (diff := abs(d - i)) and linear_fuel else diff*(diff + 1)/2 for d in self.data) for i in range(min(self.data), max(self.data) + 1)))
 
     def solve_part1(self):
         return self.calc()
