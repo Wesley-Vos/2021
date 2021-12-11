@@ -1,7 +1,7 @@
 from aoc.util.Day import Day
 
 
-class Octopuses:
+class Grid:
     class Octopus:
         def __init__(self, pos, energy):
             self.energy = int(energy)
@@ -24,10 +24,7 @@ class Octopuses:
         self.grid = {(x, y): self.Octopus((x, y), energy) for y, row in enumerate(data) for x, energy in enumerate(row)}
 
     def __str__(self):
-        out = ""
-        for y in range(self.size_y):
-            out += (" ".join(str(self.grid.get((x,y)).energy) for x in range(self.size_x))) + "\n"
-        return out
+        return "\n".join(" ".join(str(self.grid.get((x, y)).energy for x in range(self.size_x)) for y in range(self.size_y)))
 
     def _step(self):
         self.steps += 1
@@ -41,12 +38,11 @@ class Octopuses:
             for (x, y), octo in to_check.copy().items():
                 to_check.pop((x, y))
                 to_flash.append((x, y))
-                for neighbour in octo.neighbours:
-                    if neighbour in self.grid:
-                        octo = self.grid.get(neighbour)
-                        octo.step()
-                        if octo.can_flash() and neighbour not in to_flash:
-                            to_check[neighbour] = octo
+                for neighbour in filter(lambda n: n in self.grid, octo.neighbours):
+                    octo = self.grid.get(neighbour)
+                    octo.step()
+                    if octo.can_flash() and neighbour not in to_flash:
+                        to_check[neighbour] = octo
 
         cnt = len(to_flash)
         for octo in map(self.grid.get, to_flash):
@@ -68,10 +64,10 @@ class Day11(Day):
         super().__init__(filename)
     
     def solve_part1(self):
-        return Octopuses(self.data).cnt_flashes(100)
+        return Grid(self.data).cnt_flashes(100)
 
     def solve_part2(self):
-        return Octopuses(self.data).sim_flash()
+        return Grid(self.data).sim_flash()
 
 
 def main():
