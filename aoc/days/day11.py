@@ -20,18 +20,16 @@ class Octopuses:
     def __init__(self, data):
         self.grid = {}
         self.steps = 0
-        self.maxx, self.maxy = len(data[0]), len(data)
-        for y, row in enumerate(data):
-            for x, energy in enumerate(row):
-                self.grid[(x, y)] = self.Octopus((x, y), energy)
+        self.size_x, self.size_y = len(data[0]), len(data)
+        self.grid = {(x, y): self.Octopus((x, y), energy) for y, row in enumerate(data) for x, energy in enumerate(row)}
 
     def __str__(self):
         out = ""
-        for y in range(self.maxy):
-            out += (" ".join(str(self.grid.get((x,y)).energy) for x in range(self.maxx))) + "\n"
+        for y in range(self.size_y):
+            out += (" ".join(str(self.grid.get((x,y)).energy) for x in range(self.size_x))) + "\n"
         return out
 
-    def step(self):
+    def _step(self):
         self.steps += 1
         for pos, octo in self.grid.items():
             octo.step()
@@ -57,10 +55,10 @@ class Octopuses:
         return cnt
 
     def cnt_flashes(self, steps):
-        return sum(self.step() for _ in range(steps))
+        return sum(self._step() for _ in range(steps))
 
     def sim_flash(self):
-        while self.step() != (self.maxx * self.maxy):
+        while self._step() != (self.size_x * self.size_y):
             pass
         return self.steps
  
