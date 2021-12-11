@@ -3,8 +3,10 @@ from aoc.util.Day import Day
 
 class Octopuses:
     class Octopus:
-        def __init__(self, energy):
+        def __init__(self, pos, energy):
             self.energy = int(energy)
+            self.x, self.y = pos
+            self.neighbours = [(self.x + dx, self.y + dy) for dx, dy in {(0, 1), (0, -1), (-1, 0), (1, 0), (-1, -1), (1, 1), (-1, 1), (1, -1)}]
         
         def step(self):
             self.energy += 1
@@ -17,33 +19,31 @@ class Octopuses:
     
     def __init__(self, data):
         self.grid = {}
+        self.steps = 0
         self.maxx, self.maxy = len(data[0]), len(data)
         for y, row in enumerate(data):
             for x, energy in enumerate(row):
-                self.grid[(x, y)] = self.Octopus(energy)
-                
+                self.grid[(x, y)] = self.Octopus((x, y), energy)
+
     def __str__(self):
         out = ""
         for y in range(self.maxy):
             out += (" ".join(str(self.grid.get((x,y)).energy) for x in range(self.maxx))) + "\n"
         return out
-                
-    
+
     def step(self):
+        self.steps += 1
         for pos, octo in self.grid.items():
             octo.step()
         
         to_check = {(x, y): octo for (x, y), octo in self.grid.items() if octo.can_flash()}
         to_flash = []
 
-        cnt = 0
-        while len(to_check) > 0:
+        while len(to_check):
             for (x, y), octo in to_check.copy().items():
                 to_check.pop((x, y))
                 to_flash.append((x, y))
-                
-                neighbours = [(x + 1, y), (x - 1, y), (x, y - 1), (x, y + 1), (x - 1, y - 1), (x + 1, y - 1), (x - 1, y + 1), (x + 1, y + 1)]
-                for neighbour in neighbours:
+                for neighbour in octo.neighbours:
                     if neighbour in self.grid:
                         octo = self.grid.get(neighbour)
                         octo.step()
@@ -55,16 +55,14 @@ class Octopuses:
             octo.flash()
         
         return cnt
-                
-    
+
     def cnt_flashes(self, steps):
         return sum(self.step() for _ in range(steps))
 
     def sim_flash(self):
-        step = 1
-        while (cnt := self.step()) != (self.maxx * self.maxy):
-            step += 1
-        return step
+        while self.step() != (self.maxx * self.maxy):
+            pass
+        return self.steps
  
 
 class Day11(Day):
