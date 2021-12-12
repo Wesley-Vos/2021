@@ -7,7 +7,10 @@ class Grid:
             self.energy = int(energy)
             self.x, self.y = pos
             self.neighbours = [(self.x + dx, self.y + dy) for dx, dy in {(0, 1), (0, -1), (-1, 0), (1, 0), (-1, -1), (1, 1), (-1, 1), (1, -1)}]
-        
+
+        def __str__(self):
+            return str(self.energy)
+
         def step(self):
             self.energy += 1
         
@@ -24,11 +27,11 @@ class Grid:
         self.grid = {(x, y): self.Octopus((x, y), energy) for y, row in enumerate(data) for x, energy in enumerate(row)}
 
     def __str__(self):
-        return "\n".join(" ".join(str(self.grid.get((x, y)).energy for x in range(self.size_x)) for y in range(self.size_y)))
+        return "\n".join(" ".join(str(self.grid.get((x, y))) for x in range(self.size_x)) for y in range(self.size_y))
 
     def _step(self):
         self.steps += 1
-        for pos, octo in self.grid.items():
+        for octo in self.grid.values():
             octo.step()
         
         to_check = {(x, y): octo for (x, y), octo in self.grid.items() if octo.can_flash()}
@@ -36,19 +39,17 @@ class Grid:
 
         while len(to_check):
             for (x, y), octo in to_check.copy().items():
-                to_check.pop((x, y))
-                to_flash.append((x, y))
+                to_flash.append(to_check.pop((x, y)))
                 for neighbour in filter(lambda n: n in self.grid, octo.neighbours):
                     octo = self.grid.get(neighbour)
                     octo.step()
-                    if octo.can_flash() and neighbour not in to_flash:
+                    if octo.can_flash() and octo not in to_flash:
                         to_check[neighbour] = octo
 
-        cnt = len(to_flash)
-        for octo in map(self.grid.get, to_flash):
+        for octo in to_flash:
             octo.flash()
         
-        return cnt
+        return len(to_flash)
 
     def cnt_flashes(self, steps):
         return sum(self._step() for _ in range(steps))
@@ -62,12 +63,13 @@ class Grid:
 class Day11(Day):
     def __init__(self, filename):
         super().__init__(filename)
+        self.grid = Grid(self.data)
     
     def solve_part1(self):
-        return Grid(self.data).cnt_flashes(100)
+        return self.grid.cnt_flashes(100)
 
     def solve_part2(self):
-        return Grid(self.data).sim_flash()
+        return self.grid.sim_flash()
 
 
 def main():
