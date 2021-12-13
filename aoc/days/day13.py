@@ -18,8 +18,9 @@ class Paper:
     def __contains__(self, item):
         return item in self.grid
 
-    def set(self, pos, val):
-        self.grid[pos] = val
+    def mirror(self, des, src):
+        if src in self or des in self:
+            self.grid[des] = 1
 
     def remove(self, pos):
         self.grid.pop(pos, None)
@@ -43,11 +44,10 @@ class PaperFolder:
         dy = (y_fold + 1) if y_fold is not None else 0
         size = {'x': x_fold or self.paper.size['x'], 'y': y_fold or self.paper.size['y']}
 
-        for y in range(dy, self.paper.size['y']):
-            for x in range(dx, self.paper.size['x']):
-                opp = (2*x_fold - x, y) if x_fold is not None else (x, 2*y_fold - y)
-                if opp in self.paper or (x, y) in self.paper:
-                    self.paper.set(opp, 1)
+        for x in range(dx, self.paper.size['x']):
+            for y in range(dy, self.paper.size['y']):
+                mirrored = (2*x_fold - x, y) if x_fold is not None else (x, 2*y_fold - y)
+                self.paper.mirror(mirrored, (x, y))
                 self.paper.remove((x, y))
 
         self.paper.size = size
