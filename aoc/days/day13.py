@@ -79,8 +79,7 @@ class Day13(Day):
 
     def solve_part2(self):
         self.folder.fold_all()
-        print(self.paper)
-        return "CJHAZHKU"
+        return "\n" + str(self.paper)
 
 
 def main():
