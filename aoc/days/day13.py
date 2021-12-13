@@ -40,8 +40,8 @@ class PaperFolder:
 
     def fold(self):
         x_fold, y_fold = self.instructions.pop(0)
-        dx = (x_fold + 1) if x_fold is not None else 0
-        dy = (y_fold + 1) if y_fold is not None else 0
+        dx = ((x_fold or -1) + 1)
+        dy = ((y_fold or -1) + 1)
         size = {'x': x_fold or self.paper.size['x'], 'y': y_fold or self.paper.size['y']}
 
         for x in range(dx, self.paper.size['x']):
