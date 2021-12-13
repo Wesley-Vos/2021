@@ -1,5 +1,6 @@
-from aoc.util.Day import Day
 import re
+
+from aoc.util.Day import Day
 
 
 class Paper:
@@ -13,13 +14,11 @@ class Paper:
             self.grid[(x, y)] = 1
 
     def __str__(self):
-        return "\n".join("".join("██" if (x, y) in self else "  " for x in range(self.size['x'])) for y in range(self.size['y']))
-
-    def __contains__(self, item):
-        return item in self.grid
+        return "\n".join("".join("██" if (x, y) in self.grid else "  " for x in range(self.size['x'])) for y in
+                         range(self.size['y']))
 
     def mirror(self, des, src):
-        if src in self or des in self:
+        if src in self.grid or des in self.grid:
             self.grid[des] = 1
 
     def remove(self, pos):
@@ -39,14 +38,16 @@ class PaperFolder:
             self.fold()
 
     def fold(self):
-        x_fold, y_fold = self.instructions.pop(0)
-        dx = ((x_fold or -1) + 1)
-        dy = ((y_fold or -1) + 1)
+        self._process_instruction(self.instructions.pop(0))
+
+    def _process_instruction(self, instruction):
+        x_fold, y_fold = instruction
+        dx, dy = ((x_fold or -1) + 1), ((y_fold or -1) + 1)
         size = {'x': x_fold or self.paper.size['x'], 'y': y_fold or self.paper.size['y']}
 
         for x in range(dx, self.paper.size['x']):
             for y in range(dy, self.paper.size['y']):
-                mirrored = (2*x_fold - x, y) if x_fold is not None else (x, 2*y_fold - y)
+                mirrored = (2 * x_fold - x, y) if x_fold is not None else (x, 2 * y_fold - y)
                 self.paper.mirror(mirrored, (x, y))
                 self.paper.remove((x, y))
 
