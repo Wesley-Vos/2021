@@ -84,7 +84,7 @@ class Day13(Day):
 
 
 def main():
-    day = Day13("day13.in")
+    day = Day13("day13rick.in")
     day.run()
 
 
