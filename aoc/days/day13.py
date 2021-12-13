@@ -57,11 +57,11 @@ class PaperFolder:
 class Day13(Day):
     def __init__(self, filename):
         super().__init__(filename)
-        grid, instructions = self._split_input()
-        self.paper = Paper(grid)
+        paper, instructions = self._handle_input()
+        self.paper = Paper(paper)
         self.folder = PaperFolder(self.paper, instructions)
 
-    def _split_input(self):
+    def _handle_input(self):
         grid, instructions = [], []
 
         for row in filter(lambda r: r != "", self.data):
