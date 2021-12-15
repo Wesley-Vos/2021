@@ -1,16 +1,16 @@
-from aoc.util.Day import Day
 from collections import defaultdict
+
+from aoc.util.Day import Day
 
 
 class PolymerBuilder:
     def __init__(self, start, mapping):
         self.mapping = mapping
         self.pairs = defaultdict(lambda: 0)
-        self.chars = defaultdict(lambda: 0)
-        for comb in map(str.__add__, start, start[1:]):
-            self.pairs[comb] += 1
-        for char in start:
-            self.chars[char] += 1
+        self.chars = defaultdict(lambda: 0, [(start[0], 1)])
+        for i, j in zip(start, start[1:]):
+            self.pairs[i + j] += 1
+            self.chars[j] += 1
 
     def build(self, n):
         for _ in range(n):
@@ -33,8 +33,7 @@ class Day14(Day):
 
     def _process_input(self):
         start, _, *mapping = self.data
-        mapping = dict(r.split(" -> ") for r in mapping)
-        return start, mapping
+        return start, dict(r.split(" -> ") for r in mapping)
 
     def solve_part1(self):
         self.polymer.build(10)
