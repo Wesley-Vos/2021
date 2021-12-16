@@ -5,7 +5,6 @@ class Day8(Day):
     def __init__(self, filename):
         super().__init__(filename)
 
-
     def solve_part1(self):
         return None
 
