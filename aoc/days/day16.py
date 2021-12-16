@@ -13,10 +13,10 @@ class PacketDecoder:
         return bin(int(string, 16))[2:].zfill(len(string) * 4)
 
     def _parse(self, packet):
-        print(packet)
+        #print(f"Packet to decode {packet}")
         version = int(packet[0:3], 2)
         type_ID = int(packet[3:6], 2)
-        print(f"Version: {version} and type: {type_ID}")
+        #print(f"Version: {version} and type: {type_ID}")
         i = 6
         new_packet = None
         if type_ID == 4:
@@ -32,25 +32,32 @@ class PacketDecoder:
             new_packet = Literal(version, type_ID, value)
 
         else:
-            self.length_type_ID = int(packet[i], 2)
+            length_type_ID = int(packet[i], 2)
+            subs = []
             i += 1
-            if self.length_type_ID == 0:
+            if length_type_ID == 0:
                 length_subpackets = int(packet[i:i + 15], 2)
-                print(f"Length mode, {length_subpackets}")
+                #print(f"Length mode, {length_subpackets}")
                 i += 15
-                while i < i + length_subpackets:
-                    pass
+                len_after = len(packet[i:]) - length_subpackets
+                while len(packet) > len_after:
+                    new_packet, packet = self._parse(packet[i:])
+                    subs.append(new_packet)
+                    i = 0
+                    #print(f"Got: {new_packet}")
 
-                # total length of subpackets = 15
             else:
                 numb_subpackets = int(packet[i:i + 11], 2)
-                print(f"Number mode {numb_subpackets}")
-                for i in range(numb_subpackets):
-                    print(f"Send {packet[i:]}")
-                    new_packet, rest = self._parse(packet[i:])
-                    print(f"Got: {new_packet} with rest {rest}")
+                #print(f"Number mode {numb_subpackets}")
+                i += 11
+                for j in range(numb_subpackets):
+                    new_packet, packet = self._parse(packet[i:])
+                    subs.append(new_packet)
+                    i = 0
+                    #print(f"Got: {new_packet}")
+            new_packet = Operator(version, type_ID, length_type_ID, subs)
 
-
+        #print(f"end parse with {packet[i:]} left")
         return new_packet, packet[i:]
 
 
@@ -68,27 +75,47 @@ class Literal(Packet):
     def __str__(self):
         return f"Literal with version {self.version}, type_ID {self.type_id} and value {self.value}"
 
+    def version_sum(self):
+        return self.version
+        
+    def val(self):
+        return self.value
+
 
 class Operator(Packet):
-    def __init__(self, version, type_id):
+    def __init__(self, version, type_id, length_type_ID, subpackets):
         super().__init__(version, type_id)
+        self.length_type_ID = length_type_ID
+        self.subpackets = subpackets
+        
+    def version_sum(self):
+        val = self.version
+        for sub in self.subpackets:
+            val += sub.version_sum()
+        return val
+        
+    def val(self):
+        return 0
+    
+    def __str__(self):
+        return f"Operator with version {self.version}, type_ID {self.type_id} and {len(self.subpackets)} subpackets"
 
 
 class Day16(Day):
     def __init__(self, filename):
         super().__init__(filename)
-        self.packet_decoder = PacketDecoder(self.data)
-        print(self.packet_decoder.packet)
+        self.packet = PacketDecoder(self.data).packet
+        print(self.packet)
 
     def solve_part1(self):
-        return None
+        return self.packet.version_sum()
 
     def solve_part2(self):
-        return None
+        return self.packet.val()
 
 
 def main():
-    day = Day16("test/day16-0.in")
+    day = Day16("day16.in")
     day.run()
 
 
